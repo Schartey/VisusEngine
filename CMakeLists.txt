@@ -1,0 +1,12 @@
+cmake_minimum_required (VERSION 2.6)
+project (VisusEngine)
+
+add_subdirectory(Engine)
+add_subdirectory(Audio)
+add_subdirectory(Editor)
+add_subdirectory(Game)
+add_subdirectory(Input)
+add_subdirectory(Math)
+add_subdirectory(Network)
+add_subdirectory(Renderer)
+add_subdirectory(Utils)
