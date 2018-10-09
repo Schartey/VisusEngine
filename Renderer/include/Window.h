@@ -1,3 +1,6 @@
+/*
+    Not in use for now, read XWindow to know why
+*/
 #ifndef WINDOW_H
 #define WINDOW_H
 

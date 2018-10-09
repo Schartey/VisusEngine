@@ -1,15 +1,36 @@
 #include "RenderDeviceOpenGL.h"
 
-RenderDevice* RenderDeviceOpenGL::CreateRenderDevice()
+int RenderDeviceOpenGL::error = 0;
+const char* RenderDeviceOpenGL::description = nullptr;
+
+int RenderDeviceOpenGL::Init(int width, int height, const char* title)
 {
     if(!glfwInit())
     {
-        return nullptr;
+        return GLFW_INIT_ERROR;
     }
+
+    glfwSetErrorCallback(error_callback);
+
+    _window = glfwCreateWindow(width, height, title, NULL, NULL);
+    if (!_window)
+    {
+
+        return CREATE_WINDOW_ERROR;
+    }
+    _width = width;
+    _height = height;
+
+    glfwMakeContextCurrent(_window);
+
+    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+
+    return OGL_INIT_SUCCESS;
 }
 
 void RenderDeviceOpenGL::CloseRenderDevice()
 {
+    glfwDestroyWindow(_window);
     glfwTerminate();
 }
 
