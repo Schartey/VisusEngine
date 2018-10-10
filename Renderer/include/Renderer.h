@@ -10,20 +10,18 @@ enum RDERROR {
     INIT_ERROR
 };
 
-typedef RenderDevice* (*CreateRenderDevice_t)();
-
 class Renderer
 {
 public:
     Renderer();
     int CreateRenderDevice(const char* api, int width, int height, const char* title);
     RenderDevice* GetRenderDevice();
+    void Release();
     char* GetError();
     ~Renderer();
 
 private:
     void* _libHandle;
-    CreateRenderDevice_t _CreateRenderDevice;
 
     RenderDevice* _renderDevice;
 

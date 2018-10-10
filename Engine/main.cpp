@@ -11,4 +11,7 @@ int main(void)
         printf("%s", err);
         fflush(stdout);
     }
+
+    renderer->Release();
+    delete renderer;
 }

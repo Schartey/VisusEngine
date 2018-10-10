@@ -26,7 +26,8 @@ int Renderer::CreateRenderDevice(const char* api, int width, int height, const c
         }
         dlerror();
 
-        _CreateRenderDevice = (CreateRenderDevice_t) dlsym(_libHandle, "CreateRenderDevice");
+        typedef RenderDevice* (*CreateRenderDevice_t)();
+        CreateRenderDevice_t _CreateRenderDevice = (CreateRenderDevice_t) dlsym(_libHandle, "CreateRenderDevice");
 
         if(!_CreateRenderDevice)
         {
@@ -52,8 +53,6 @@ int Renderer::CreateRenderDevice(const char* api, int width, int height, const c
         //Not implemented yet
     }
 #endif
-    _renderDevice->Init(width, height, title);
-    _renderDevice->CloseRenderDevice();
 
     return RDERROR::RD_SUCCESS;
 }
@@ -61,6 +60,39 @@ int Renderer::CreateRenderDevice(const char* api, int width, int height, const c
 RenderDevice* Renderer::GetRenderDevice()
 {
     return _renderDevice;
+}
+
+void Renderer::Release()
+{
+    if(!_libHandle)
+    {
+        Renderer::error = "No handle to library";
+        return;
+    }
+    typedef VSTATE (*CloseRenderDevice_t)(RenderDevice*);
+    CloseRenderDevice_t _CloseRenderDevice = (CloseRenderDevice_t) dlsym(_libHandle, "CloseRenderDevice");
+
+    if(!_CloseRenderDevice)
+    {
+        //dlclose will remove contents of dlerror(), therefor Renderer::error = dlerror(), will result in wrong data after call
+        strcpy(Renderer::error, dlerror());
+        dlclose(_libHandle);
+    }
+
+    if(_renderDevice)
+    {
+        VSTATE state = _CloseRenderDevice(_renderDevice);
+        if(state == VSTATE::V_FAIL)
+        {
+            Renderer::error = "Closing Render Device failed";
+            _renderDevice = nullptr;
+        }
+    }
+
+    if(_libHandle)
+    {
+        dlclose(_libHandle);
+    }
 }
 
 char* Renderer::GetError()

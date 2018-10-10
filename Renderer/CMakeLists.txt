@@ -1,9 +1,18 @@
 set(CMAKE_VERBOSE_MAKEFILE ON)
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")
 
 add_subdirectory(RenderDevices)
-add_subdirectory(Window)
+#add_subdirectory(Window)
 
-add_library(Renderer src/Renderer.cpp include/Renderer.h include/RenderDevice.h src/Window.cpp include/Window.h)
+set(SOURCE  src/SkinManager.cpp
+            src/Renderer.cpp)
+
+set(HEADER  include/SkinManager.h
+            include/Renderer.h
+            include/RenderDevice.h
+            include/Common.h)
+
+add_library(Renderer ${SOURCE} ${HEADER})
 
 include_directories(include)
 
