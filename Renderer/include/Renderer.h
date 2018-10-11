@@ -2,6 +2,7 @@
 #define RENDERER_H
 
 #include "RenderDevice.h"
+#include "Asset/AssetManager.h"
 
 enum RDERROR {
     RD_SUCCESS,
@@ -24,7 +25,7 @@ private:
     void* _libHandle;
 
     RenderDevice* _renderDevice;
-
+    AssetManager* _assetManager;
     static char* error;
 
 };

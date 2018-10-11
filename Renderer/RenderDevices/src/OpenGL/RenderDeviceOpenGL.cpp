@@ -27,6 +27,8 @@ int RenderDeviceOpenGL::Init(int width, int height, const char* title)
 
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 
+    _assetManagerDevice = new AssetManagerDevice();
+
     return OGL_INIT_SUCCESS;
 }
 

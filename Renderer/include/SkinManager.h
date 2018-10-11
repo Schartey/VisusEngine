@@ -16,14 +16,14 @@ public:
                          float specPower,
                          uint32_t* skindId) = 0;
 
-    virtual long AddTexture(uint32_t skinId,
+    virtual VSTATE AddTexture(uint32_t skinId,
                             const char* name,
                             bool hasAlpha,
                             float alpha,
                             VCOLOR* colorKeys,
                             uint32_t numColorKeys) = 0;
 
-    virtual long AddTextureHeightmapAsBump(uint32_t skindId,
+    virtual VSTATE AddTextureHeightmapAsBump(uint32_t skindId,
                                    const char* name) = 0;
 
     virtual bool MaterialEqual(const VMATERIAL* mat0, const VMATERIAL* mat1) = 0;

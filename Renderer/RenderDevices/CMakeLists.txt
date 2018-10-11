@@ -9,16 +9,16 @@ find_package(glfw3 3.2 REQUIRED)
 find_package(OpenGL REQUIRED)
 
 set(SOURCE_GL   src/OpenGL/RenderDeviceOpenGL.cpp
-                src/OpenGL/SkinManagerOpenGL.cpp)
+                src/OpenGL/AssetManagerDeviceOpenGL.cpp)
 
 set(SOURCE_D3D  src/D3D/RenderDeviceD3D.cpp
-                src/D3D/SkinManagerD3D.cpp)
+                src/D3D/AssetManagerDeviceD3D.cpp)
 
 set(HEADER_GL   include/OpenGL/RenderDeviceOpenGL.h
-                include/OpenGL/SkinManagerOpenGL.h)
+                include/OpenGL/AssetManagerDeviceOpenGL.h)
 
 set(HEADER_D3D  include/D3D/RenderDeviceD3D.h
-                include/D3D/SkinManagerD3D.h)
+                include/D3D/AssetManagerDeviceD3D.h)
 
 add_library(RenderDeviceOpenGL SHARED ${SOURCE_GL} ${HEADER_GL})
 add_library(RenderDeviceD3D SHARED ${SOURCE_D3D} ${HEADER_D3D})

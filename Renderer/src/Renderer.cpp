@@ -8,7 +8,6 @@ char* Renderer::error = new char[256];
 
 Renderer::Renderer()
 {
-
 }
 
 int Renderer::CreateRenderDevice(const char* api, int width, int height, const char* title)
@@ -54,6 +53,8 @@ int Renderer::CreateRenderDevice(const char* api, int width, int height, const c
     }
 #endif
 
+    _assetManager = new AssetManager(_renderDevice->GetAssetManagerDevice());
+
     return RDERROR::RD_SUCCESS;
 }
 
@@ -69,7 +70,7 @@ void Renderer::Release()
         Renderer::error = "No handle to library";
         return;
     }
-    typedef VSTATE (*CloseRenderDevice_t)(RenderDevice*);
+    typedef bool (*CloseRenderDevice_t)(RenderDevice*);
     CloseRenderDevice_t _CloseRenderDevice = (CloseRenderDevice_t) dlsym(_libHandle, "CloseRenderDevice");
 
     if(!_CloseRenderDevice)
@@ -81,8 +82,7 @@ void Renderer::Release()
 
     if(_renderDevice)
     {
-        VSTATE state = _CloseRenderDevice(_renderDevice);
-        if(state == VSTATE::V_FAIL)
+        if(!_CloseRenderDevice(_renderDevice))
         {
             Renderer::error = "Closing Render Device failed";
             _renderDevice = nullptr;

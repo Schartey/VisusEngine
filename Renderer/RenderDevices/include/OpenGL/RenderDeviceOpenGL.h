@@ -18,6 +18,8 @@ public:
     virtual void SetClearColor(float red, float green, float blue, float alpha) override;
     virtual void Release() override;
 
+    virtual AssetManagerDevice* GetAssetManagerDevice() override;
+
     virtual void GetError(int &error, const char* description) override;
 
     virtual ~RenderDeviceOpenGL() override;
@@ -27,6 +29,8 @@ private:
     int _height;
     bool _running;
     GLfloat* clearColor;
+
+    AssetManagerDevice* _assetManagerDevice;
 
     static int error;
     static const char* description;
@@ -39,15 +43,15 @@ extern "C" {
         return new RenderDeviceOpenGL();
     }
 
-    VSTATE CloseRenderDevice(RenderDevice* renderDevice)
+    bool CloseRenderDevice(RenderDevice* renderDevice)
     {
         if(!renderDevice)
         {
-            return VSTATE::V_FAIL;
+            return false;
         }
         delete renderDevice;
         renderDevice = nullptr;
-        return VSTATE::V_OK;
+        return true;
     }
 }
 
