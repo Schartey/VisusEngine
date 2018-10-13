@@ -3,6 +3,7 @@
 
 #include "RenderDevice.h"
 #include "Asset/AssetManager.h"
+#include "DLHelper.h"
 
 enum RDERROR {
     RD_SUCCESS,
@@ -22,7 +23,7 @@ public:
     ~Renderer();
 
 private:
-    void* _libHandle;
+    DLLibrary* _libHandle;
 
     RenderDevice* _renderDevice;
     AssetManager* _assetManager;

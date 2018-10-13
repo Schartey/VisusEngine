@@ -25,9 +25,11 @@ add_library(Renderer ${SOURCE} ${HEADER})
 include_directories(include)
 
 target_include_directories(Renderer PUBLIC ${DevIL_INCLUDE_DIRS})
+target_include_directories(Renderer PUBLIC ../Platform/include)
 
 target_link_libraries(Renderer RenderDeviceD3D)
 target_link_libraries(Renderer RenderDeviceOpenGL)
+target_link_libraries(Renderer Platform)
 target_link_libraries(Renderer Utils)
 #target_link_libraries(Renderer XWindow)
 #target_link_libraries(Renderer WWindow)
