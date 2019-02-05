@@ -2,6 +2,7 @@
 #define RENDERDEVICE_H
 
 #include "../../General/include/General.h"
+#include "Asset/AssetManagerDevice.h"
 
 enum RDERROR_OGL {
     OGL_INIT_SUCCESS,
@@ -23,6 +24,8 @@ public:
     virtual void Clear(bool clearPixel, bool clearDepth, bool clearStencil) = 0;
     virtual void SetClearColor(float red, float green, float blue, float alpha) = 0;
     virtual void Release(void) = 0;
+
+    virtual AssetManagerDevice* GetAssetManagerDevice(void) = 0;
 
     virtual void GetError(int &error, const char* description) = 0;
     virtual ~RenderDevice(void) {}

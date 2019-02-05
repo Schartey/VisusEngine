@@ -2,38 +2,28 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <dlfcn.h>
 
 char* Renderer::error = new char[256];
 
 Renderer::Renderer()
 {
-
 }
 
 int Renderer::CreateRenderDevice(const char* api, int width, int height, const char* title)
 {
     if(strcmp(api, "OpenGL") == 0)
     {
-#ifdef _WIN32
-        //Not implemented yet
-#else
-        _libHandle = dlopen("libRenderDeviceOpenGL.so", RTLD_LAZY);
-        if(!_libHandle)
+        if(!dlLibraryOpen("libRenderDeviceOpenGL.so", DL_MODE::DL_LAZY, _libHandle) || _libHandle)
         {
-            strcpy(Renderer::error, dlerror());
+            strcpy(Renderer::error, _libHandle->GetError());
             return DLOPEN_ERROR;
         }
-        dlerror();
-
         typedef RenderDevice* (*CreateRenderDevice_t)();
-        CreateRenderDevice_t _CreateRenderDevice = (CreateRenderDevice_t) dlsym(_libHandle, "CreateRenderDevice");
+        CreateRenderDevice_t _CreateRenderDevice;
 
-        if(!_CreateRenderDevice)
+        if(DL_FAILED(_libHandle->DlSym("CreateRenderDevice", &_CreateRenderDevice)) || !_CreateRenderDevice)
         {
-            //dlclose will remove contents of dlerror(), therefor Renderer::error = dlerror(), will result in wrong data after call
-            strcpy(Renderer::error, dlerror());
-            dlclose(_libHandle);
+            strcpy(Renderer::error, _libHandle->GetError());
             return DLSYM_ERROR;
         }
 
@@ -45,14 +35,13 @@ int Renderer::CreateRenderDevice(const char* api, int width, int height, const c
             _renderDevice->GetError(errNum, error);
             return INIT_ERROR;
         }
-#endif
     }
-#ifdef _WIN32
     else if(strcmp(api, "Direct3D"))
     {
         //Not implemented yet
     }
-#endif
+
+    _assetManager = new AssetManager(_renderDevice->GetAssetManagerDevice());
 
     return RDERROR::RD_SUCCESS;
 }
@@ -69,20 +58,17 @@ void Renderer::Release()
         Renderer::error = "No handle to library";
         return;
     }
-    typedef VSTATE (*CloseRenderDevice_t)(RenderDevice*);
-    CloseRenderDevice_t _CloseRenderDevice = (CloseRenderDevice_t) dlsym(_libHandle, "CloseRenderDevice");
+    typedef bool (*CloseRenderDevice_t)(RenderDevice*);
+    CloseRenderDevice_t _CloseRenderDevice;
 
-    if(!_CloseRenderDevice)
+    if(DL_FAILED(_libHandle->DlSym("CreateRenderDevice", &_CloseRenderDevice)) || !_CloseRenderDevice)
     {
-        //dlclose will remove contents of dlerror(), therefor Renderer::error = dlerror(), will result in wrong data after call
-        strcpy(Renderer::error, dlerror());
-        dlclose(_libHandle);
+        strcpy(Renderer::error, _libHandle->GetError());
     }
 
     if(_renderDevice)
     {
-        VSTATE state = _CloseRenderDevice(_renderDevice);
-        if(state == VSTATE::V_FAIL)
+        if(!_CloseRenderDevice(_renderDevice))
         {
             Renderer::error = "Closing Render Device failed";
             _renderDevice = nullptr;
@@ -91,7 +77,7 @@ void Renderer::Release()
 
     if(_libHandle)
     {
-        dlclose(_libHandle);
+        dlLibraryClose(_libHandle);
     }
 }
 

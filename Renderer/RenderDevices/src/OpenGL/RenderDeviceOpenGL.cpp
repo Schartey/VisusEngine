@@ -1,4 +1,4 @@
-#include "RenderDeviceOpenGL.h"
+#include "OpenGL/RenderDeviceOpenGL.h"
 
 int RenderDeviceOpenGL::error = 0;
 const char* RenderDeviceOpenGL::description = nullptr;
@@ -18,7 +18,6 @@ int RenderDeviceOpenGL::Init(int width, int height, const char* title)
     _window = glfwCreateWindow(width, height, title, NULL, NULL);
     if (!_window)
     {
-
         return CREATE_WINDOW_ERROR;
     }
     _width = width;
@@ -27,6 +26,8 @@ int RenderDeviceOpenGL::Init(int width, int height, const char* title)
     glfwMakeContextCurrent(_window);
 
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+
+    _assetManagerDevice = new AssetManagerDevice();
 
     return OGL_INIT_SUCCESS;
 }

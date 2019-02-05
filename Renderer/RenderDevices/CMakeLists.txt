@@ -1,5 +1,7 @@
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
+ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
+
 add_subdirectory(Glad)
 
 if(UNIX)
@@ -9,10 +11,12 @@ else()
 	find_package(GLFW MODULE REQUIRED)
 endif()
 
+#Logger should be loaded further up the hierachy. Surely also need it somewhere else.
+FIND_PACKAGE(Boost COMPONENTS log REQUIRED)
 find_package(OpenGL REQUIRED)
 
-add_library(RenderDeviceD3D SHARED src/RenderDeviceD3D.cpp include/RenderDeviceD3D.h)
-add_library(RenderDeviceOpenGL SHARED src/RenderDeviceOpenGL.cpp include/RenderDeviceOpenGL.h)
+set(SOURCE_GL   src/OpenGL/RenderDeviceOpenGL.cpp
+                src/OpenGL/AssetManagerDeviceOpenGL.cpp)
 
 if(NOT UNIX AND GLFW_FOUND)
 	include_directories(${GLFW_INCLUDE_DIR})
@@ -29,7 +33,10 @@ else(GLFW_FOUND)
 	target_link_libraries(RenderDeviceOpenGL GLFW_LIBRARY)
 endif()
 
+target_include_directories(RenderDeviceOpenGL PUBLIC ${BOOST_INCLUDE_DIRS})
+
 target_link_libraries(RenderDeviceOpenGL Glad)
+target_link_libraries(RenderDeviceOpenGL ${Boost_LIBRARIES})
 
 install (TARGETS RenderDeviceD3D RenderDeviceOpenGL LIBRARY DESTINATION lib
 			  ARCHIVE DESTINATION lib)
